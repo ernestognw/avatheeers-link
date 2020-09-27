@@ -1,0 +1,33 @@
+{
+  "name": "avatheeers",
+  "version": "1.0.0",
+  "description": "A NFT application to buy unique avataars under ERC721 standard on top of Ethereum Blockchain",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack --config=webpack.config.js"
+  },
+  "keywords": [],
+  "author": "Ernesto García <ernesto@blockdemy.com>",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.1.0",
+    "@truffle/hdwallet-provider": "^1.0.43",
+    "web3": "^1.2.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-transform-async-to-generator": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.8.1",
+    "eslint-plugin-babel": "^5.3.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "license": "MIT"
+}
