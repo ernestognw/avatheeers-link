@@ -36,6 +36,8 @@ contract Avatheeers is IERC721, ERC165, VRFConsumerBase {
     // Required variables for chainlink operation
     bytes32 internal keyHash;
     uint256 internal fee;
+    uint256 public randomResult;
+    bytes32 internal currReqId;
 
     // Constant state variables in Solidity are similar to other languages
     // but you must assign from an expression which is constant at compile time.
@@ -56,9 +58,6 @@ contract Avatheeers is IERC721, ERC165, VRFConsumerBase {
 
     // Creates an empty array of Avatheeer structs
     Avatheeer[] public avatheeers;
-
-    // Mapping from requestId to avatheeer name
-    mapping(bytes32 => string) public requestIdToName;
 
     // Mapping from id of Avatheeer to its owner's address
     mapping(uint256 => address) public avatheeerToOwner;
@@ -103,8 +102,8 @@ contract Avatheeers is IERC721, ERC165, VRFConsumerBase {
         fee = 0.1 * 10**18; // 0.1 LINK
     }
 
-    function createAvatheeer(string memory _name)
-        public
+    function refreshRandom(string memory _name)
+        internal
         returns (bytes32 requestId)
     {
         require(
@@ -112,9 +111,7 @@ contract Avatheeers is IERC721, ERC165, VRFConsumerBase {
             "Not enough LINK - fill contract with faucet"
         );
         uint256 seed = uint256(keccak256(abi.encodePacked(_name)));
-        bytes32 rId = requestRandomness(keyHash, fee, seed);
-        requestIdToName[rId] = _name;
-        return rId;
+        return requestRandomness(keyHash, fee, seed);
     }
 
     // Callback function used by VRF Coordinator
@@ -123,9 +120,32 @@ contract Avatheeers is IERC721, ERC165, VRFConsumerBase {
         internal
         override
     {
-        uint256 dna = randomness;
-        dna = SafeMath.mod(dna, dnaModulus);
-        _createAvatheeer(requestIdToName[requestId], dna);
+        currReqId = requestId;
+        randomResult = randomness;
+    }
+
+     // Creates a random Avatheeer from string (name)
+    function createRandomAvatheeer(string memory _name) public {
+        uint256 randDna = generateRandomDna(_name, msg.sender);
+        _createAvatheeer(_name, randDna);
+        refreshRandom(_name);
+    }
+
+    // Generates random DNA from string (name) and address of the owner (creator)
+    function generateRandomDna(string memory _str, address _owner)
+        public
+        view
+        returns (
+            // Functions marked as `pure` promise not to read from or modify the state
+            // Learn more: https://solidity.readthedocs.io/en/v0.6.2/contracts.html#pure-functions
+            uint256
+        )
+    {
+        // Generates random uint from string (name) + random chainlink oracle result + address (owner)
+        uint256 rand = uint256(keccak256(abi.encodePacked(_str))) + randomResult +
+            uint256(_owner);
+        rand = SafeMath.mod(rand, dnaModulus);
+        return rand;
     }
 
     // Internal function to create a random Avatheeer from string (name) and DNA
