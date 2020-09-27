@@ -67,7 +67,6 @@ module.exports = {
           `https://rinkeby.infura.io/v3/${infuraClientId}`
         ),
       network_id: 4, // Rinkeby's id
-      gas: 5500000, // Rinkeby has a lower block limit than mainnet
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     // Useful for private networks
@@ -86,7 +85,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: '0.6.2', // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.6.6', // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
